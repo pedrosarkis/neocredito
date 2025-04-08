@@ -1,0 +1,63 @@
+version: '3.9'
+
+services:
+  backend:
+    build: ./backend
+    container_name: backend
+    volumes:
+      - ./backend:/app
+    working_dir: /app
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mariadb
+      - rabbitmq
+    environment:
+      - DB_HOST=mariadb
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - DB_NAME=neocredito
+      - RABBITMQ_URL=amqp://rabbitmq
+    networks:
+      - neonet
+
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    volumes:
+      - ./frontend:/app
+    working_dir: /app
+    ports:
+      - "5173:5173"
+    command: npm run dev
+    networks:
+      - neonet
+
+  mariadb:
+    image: mariadb:11
+    container_name: mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: neocredito
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - neonet
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - neonet
+
+volumes:
+  mariadb_data:
+
+networks:
+  neonet:
