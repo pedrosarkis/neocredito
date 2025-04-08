@@ -1,11 +1,11 @@
 version: '3.9'
-
 services:
   backend:
     build: ./backend
     container_name: backend
     volumes:
       - ./backend:/app
+      - /app/node_modules 
     working_dir: /app
     ports:
       - "3001:3001"
@@ -18,21 +18,27 @@ services:
       - DB_PASSWORD=root
       - DB_NAME=neocredito
       - RABBITMQ_URL=amqp://rabbitmq
+      - NODE_ENV=development
     networks:
       - neonet
-
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3001"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
   frontend:
     build: ./frontend
     container_name: frontend
     volumes:
       - ./frontend:/app
+      - /app/node_modules  # Volume anônimo para preservar node_modules
     working_dir: /app
     ports:
       - "5173:5173"
     command: npm run dev
     networks:
       - neonet
-
   mariadb:
     image: mariadb:11
     container_name: mariadb
@@ -46,7 +52,6 @@ services:
       - mariadb_data:/var/lib/mysql
     networks:
       - neonet
-
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
@@ -55,9 +60,7 @@ services:
       - "15672:15672"
     networks:
       - neonet
-
 volumes:
   mariadb_data:
-
 networks:
   neonet:

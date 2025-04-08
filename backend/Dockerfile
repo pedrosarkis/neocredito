@@ -1,4 +1,4 @@
-FROM node:23-alpine
+FROM node:23-slim
 
 WORKDIR /app
 
@@ -10,4 +10,9 @@ COPY package.json yarn.lock tsconfig.json ./
 
 RUN yarn install --immutable
 
-CMD ["yarn", "dev"]
+# Copiar o arquivo app.ts para o diretório src
+COPY src/ ./src/
+
+EXPOSE 3001
+
+CMD ["yarn", "dev:watch"]
