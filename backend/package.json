@@ -5,7 +5,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "ava",
+    "test": "vitest",
     "dev": "node --loader ts-node/esm src/app.ts",
     "dev:watch": "node --watch --loader ts-node/esm src/app.ts",
     "build": "vitest"

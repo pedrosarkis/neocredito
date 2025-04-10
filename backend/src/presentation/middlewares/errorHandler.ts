@@ -1,6 +1,5 @@
 import { Request, Response } from 'hyper-express';
 
-// Custom error class with status code
 export class AppError extends Error {
   statusCode: number;
   
@@ -12,7 +11,6 @@ export class AppError extends Error {
   }
 }
 
-// Global error handler
 export const errorHandler = (err: Error, req: Request, res: any) => {
   console.error('Error:', err);
   
@@ -24,7 +22,6 @@ export const errorHandler = (err: Error, req: Request, res: any) => {
     });
   }
   
-  // Default server error response
   res.status_code = 500;
   return res.json({
     success: false,
